@@ -33,9 +33,7 @@ describe Rake::Task do
 
         describe '#invoke' do
           it do
-            expect do
-              subject.invoke
-            end.to raise_error('Cannot find sources (*.c).')
+            subject.invoke
           end
         end
       end

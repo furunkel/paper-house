@@ -108,12 +108,7 @@ module PaperHouse
     end
 
     def build
-      check_sources_list
-      generate_target
-    end
-
-    def check_sources_list
-      fail "Cannot find sources (#{@sources})." if sources_list.empty?
+      generate_target unless sources_list.empty?
     end
 
     def define_clean_task(targets, file_list)
