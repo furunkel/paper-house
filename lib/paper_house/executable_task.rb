@@ -45,14 +45,8 @@ module PaperHouse
         # Better directly pass the so file
         #@library_dependencies << task.lname if task.respond_to? :lname
         add_object task.target_path if task.respond_to? :target_path
-
       end
       super
-    end
-
-    private
-    def generate_target
-      sh(([cc] + cc_options).join(' '))
     end
 
     def cc_options
