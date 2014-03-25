@@ -26,6 +26,16 @@ module PaperHouse
     include LinkerOptions
     include Platform
 
+    def self.define_task(name, *args, &block)
+      options = (Hash === args.last) ? args.pop : {}
+
+      orig_define_task(name, *args).tap do |task|
+        task.version = options[:version]
+        block.call(task) if block
+        task.send :define_prerequisite_tasks
+      end
+    end
+
     # Library version string.
     attr_accessor :version
 

@@ -27,7 +27,8 @@ module PaperHouse
 
     def initialize(c_file, o_file, cc, cc_options)
       @cc = cc
-      @command = "#{@cc} -H #{cc_options} -c #{c_file} -o #{o_file}"
+      @options = ["-H #{cc_options}", "-c #{c_file}", "-o #{o_file}"]
+      @command = "#{@cc} #{@options.join(' ')}"
       @data = []
       @out = STDERR
     end
@@ -38,7 +39,7 @@ module PaperHouse
     def run
       @out.puts @command
       exit_status = popen_command
-      fail "#{@cc} failed" if exit_status != 0
+      raise BuildFailed.new(@cc, @options, exit_status) if exit_status != 0
     end
 
     private

@@ -20,9 +20,19 @@ require 'paper_house/executable_task'
 require 'paper_house/ruby_extension_task'
 require 'paper_house/shared_library_task'
 require 'paper_house/static_library_task'
+require 'paper_house/config_task'
 require 'paper_house/version'
 require 'paper_house/dsl'
 
+module PaperHouse
+  def self.root
+    File.expand_path '../..', __FILE__
+  end
+
+  def self.templates
+    File.join root, 'templates'
+  end
+end
 
 ### Local variables:
 ### mode: Ruby

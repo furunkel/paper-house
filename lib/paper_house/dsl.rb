@@ -19,41 +19,23 @@
 module PaperHouse
   module DSL
     def executable_task(name, *args, &block)
-      task = ExecutableTask.define_task(name, *args)
-
-      block.call(task) if block
-      task.send :define_prerequisite_tasks
-
-      task
+      ExecutableTask.define_task(name, *args, &block)
     end
 
     def shared_library_task(name, *args, &block)
-      options = (Hash === args.last) ? args.pop : {}
-      task = SharedLibraryTask.define_task(name, *args)
-
-      task.version = options[:version]
-      block.call(task) if block
-      task.send :define_prerequisite_tasks
-
-      task
+      SharedLibraryTask.define_task(name, *args, &block)
     end
 
     def static_library_task(name, *args, &block)
-      task = StaticLibraryTask.define_task(name, *args)
-
-      block.call(task) if block
-      task.send :define_prerequisite_tasks
-
-      task
+      StaticLibraryTask.define_task(name, *args, &block)
     end
 
     def ruby_extension_task(name, *args, &block)
-      task = RubyExtensionTask.define_task(name, *args)
+      RubyExtensionTask.define_task(name, *args, &block)
+    end
 
-      block.call(task) if block
-      task.send :define_prerequisite_tasks
-
-      task
+    def config_task(name, *args, &block)
+      ConfigTask.define_task(name, *args, &block)
     end
 
     extend self

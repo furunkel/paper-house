@@ -26,18 +26,19 @@ module PaperHouse
 
   # Exception raised if a build task fails
   class BuildFailed < ::StandardError
+
     attr_reader :command
     attr_reader :options
-    attr_reader :status
+    attr_reader :exit_status
 
-    def initialize(command, options, status)
+    def initialize(command, options, exit_status)
       @command = command
       @options = options
-      @status = status
+      @exit_status = exit_status
     end
 
     def message
-      "Command `#{([command] + options).join(' ')}' failed with status #{status.exitstatus}"
+      "Command `#{([command] + options).join(' ')}' failed with status #{exit_status}"
     end
   end
 
@@ -46,6 +47,17 @@ module PaperHouse
     include Rake::DSL
 
     include CcOptions
+
+
+    class << self
+      alias_method :orig_define_task, :define_task
+      def define_task(name, *args, &block)
+        super.tap do |task|
+          block.call(task) if block
+          task.send :define_prerequisite_tasks
+        end
+      end
+    end
 
     # @!attribute target_directory
     #   Directory where *.o files are created.
@@ -160,7 +172,7 @@ module PaperHouse
 
     def generate_target
       sh(([cc] + cc_options).join(' ')) do |ok, status|
-        ok or raise BuildFailed.new(cc, cc_options, status)
+        ok or raise BuildFailed.new(cc, cc_options, status.existstatus)
       end
     end
   end
