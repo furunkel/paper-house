@@ -1,9 +1,0 @@
-#include <<%= header %>>
-
-int __attribute__((optimize("O0"))) main(int argc, char **argv) {
-  if(argc > 10) {
-    f = (void volatile *) <%= func %>    
-  } else {
-    f = (void volatile *) main;
-  }
-}

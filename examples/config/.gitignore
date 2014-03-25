@@ -1,5 +1,4 @@
-.hello.depends
-hello
-hello.o
+*.depends
+*.o
 *.h
 
