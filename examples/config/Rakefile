@@ -1,0 +1,9 @@
+# -*- coding: utf-8 -*-
+
+require 'paper_house'
+
+include PaperHouse::DSL
+
+config_task :hello do |t|
+  t.headers = ['stdint.h', 'shouldnotexist.h']
+end
