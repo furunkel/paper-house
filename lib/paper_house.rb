@@ -21,6 +21,8 @@ require 'paper_house/ruby_extension_task'
 require 'paper_house/shared_library_task'
 require 'paper_house/static_library_task'
 require 'paper_house/version'
+require 'paper_house/dsl'
+
 
 ### Local variables:
 ### mode: Ruby

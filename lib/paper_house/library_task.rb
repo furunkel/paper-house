@@ -21,20 +21,14 @@ require 'paper_house/build_task'
 module PaperHouse
   # Common base class for static, shared, and ruby library tasks.
   class LibraryTask < BuildTask
+
     # Find a LibraryTask by name
     def self.find_named(name)
-      ObjectSpace.each_object(self) do |each|
-        obj_name = each.name
-        if Rake::Task.task_defined?(obj_name) && obj_name == name.to_s
-          return each
-        end
+      if Rake::Task.task_defined?(name)
+        task = Rake::Task[name]
+        return task if task.is_a? self
       end
       nil
-    end
-
-    def initialize(name, &block)
-      @library_dependencies = []
-      super name, &block
     end
 
     # Name of library.

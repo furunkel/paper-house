@@ -24,30 +24,10 @@ require 'rake/tasklib'
 
 module PaperHouse
   # Common base class for *.c compilation tasks.
-  class BuildTask < Rake::TaskLib
-    # Helper class for defining CLEAN and CLOBBER.
-    class CleanTask
-      def initialize(targets, file_list)
-        @targets = targets
-        @file_list = Object.const_get(file_list.to_s.upcase)
-        define_task
-      end
-
-      private
-
-      def define_task
-        @targets.each do |each|
-          next if @file_list.include?(each)
-          @file_list.include each
-        end
-        @file_list.existing!
-      end
-    end
+  class BuildTask < Rake::Task
+    include Rake::DSL
 
     include CcOptions
-
-    # Name of task.
-    attr_accessor :name
 
     # @!attribute target_directory
     #   Directory where *.o files are created.
@@ -65,11 +45,10 @@ module PaperHouse
       ENV['CC'] || @cc || 'gcc'
     end
 
-    def initialize(name, &block)
-      @name = name.to_s
-      block.call self if block
-      define
+    def initialize(task_name, app)
+      super(task_name, app)
     end
+
 
     # Relative path to target file.
     def target_path
@@ -78,17 +57,13 @@ module PaperHouse
 
     private
 
-    def define
-      define_main_task
+    def define_prerequisite_tasks
       define_directory_task
       define_all_c_compile_tasks
       define_maybe_generate_target_task
       define_clean_tasks
-    end
 
-    def define_main_task
-      path = target_path
-      task name => [target_directory, path]
+      enhance [target_directory, target_path]
     end
 
     def define_directory_task
@@ -123,17 +98,32 @@ module PaperHouse
       fail "Cannot find sources (#{@sources})." if sources_list.empty?
     end
 
+    def define_clean_task(targets, file_list)
+      targets.each do |target|
+        next if file_list.include?(target)
+        file_list.include target
+      end
+      file_list.existing!
+    end
+
     def define_clean_tasks
-      CleanTask.new objects, :clean
-      CleanTask.new clobber_targets, :clobber
+      define_clean_task objects, CLEAN
+      define_clean_task clobber_targets, CLOBBER
     end
 
     def clobber_targets
       [target_path, dependency.path]
     end
 
+    def add_object(object)
+      @objects ||= []
+      @objects << object
+    end
+
     def objects
-      sources_list.pathmap File.join(target_directory, '%n.o')
+      sources_list.ext('o').map do |file_name|
+        File.join(target_directory, File.basename(file_name))
+      end + (@objects || []) 
     end
 
     def compile(o_file, c_file)

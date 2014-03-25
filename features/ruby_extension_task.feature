@@ -45,26 +45,6 @@ Feature: PaperHouse::RubyExtensionTask
     And the output should contain "HelloPaperHouse"
 
   @linux
-  Scenario: Build a Ruby extension from one *.c and *.h file using llvm-gcc
-    Given the current project directory is "examples/ruby_extension"
-    When I run rake "-f Rakefile.llvm hello"
-    Then the output should match /^llvm-gcc/
-    And the output should not match /^gcc/
-    And a file named "hello.so" should exist
-    And I successfully run `ruby -I. -rhello -e "p HelloPaperHouse"`
-    And the output should contain "HelloPaperHouse"
-
-  @mac
-  Scenario: Build a Ruby extension from one *.c and *.h file using llvm-gcc
-    Given the current project directory is "examples/ruby_extension"
-    When I run rake "-f Rakefile.llvm hello"
-    Then the output should match /^llvm-gcc/
-    And the output should not match /^gcc/
-    And a file named "hello.bundle" should exist
-    And I successfully run `ruby -I. -rhello -e "p HelloPaperHouse"`
-    And the output should contain "HelloPaperHouse"
-
-  @linux
   Scenario: Clean
     Given the current project directory is "examples/ruby_extension"
     And I successfully run `rake hello`

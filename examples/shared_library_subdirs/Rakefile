@@ -2,7 +2,9 @@
 
 require 'paper_house'
 
-libhello = PaperHouse::SharedLibraryTask.new :libhello do | task |
+include PaperHouse::DSL
+
+libhello = shared_library_task :libhello do | task |
   task.library_name = 'hello'
   task.version = '0.1.0'
   task.target_directory = 'objects'
@@ -11,18 +13,7 @@ libhello = PaperHouse::SharedLibraryTask.new :libhello do | task |
   task.cflags = %w(-Werror -Wall -Wextra)
 end
 
-task :hello => [:libhello, libhello.linker_name, libhello.soname]
-
-PaperHouse::ExecutableTask.new :hello do | task |
+executable_task :hello => [:libhello] do | task |
   task.sources = 'sources/main.c'
   task.includes = 'includes'
-  task.ldflags = '-L.'
-end
-
-[libhello.linker_name, libhello.soname].each do | each |
-  file each do | task |
-    symlink File.join('objects', libhello.target_file_name), task.name
-  end
-
-  CLOBBER.include each if FileTest.exists?(each)
 end

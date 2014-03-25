@@ -17,6 +17,7 @@
 #
 
 require 'paper_house/executable_task'
+require 'paper_house/dsl'
 
 describe Rake::Task do
   before { Rake::Task.clear }
@@ -28,7 +29,7 @@ describe Rake::Task do
       let(:task) { :test }
 
       context 'when ExecutableTask named :test is defined' do
-        before { PaperHouse::ExecutableTask.new :test }
+        before { PaperHouse::DSL::executable_task :test }
 
         describe '#invoke' do
           it do
@@ -48,7 +49,7 @@ end
 
 describe PaperHouse::ExecutableTask, '.new' do
   context 'with name :test' do
-    subject { PaperHouse::ExecutableTask.new :test }
+    subject { PaperHouse::DSL::executable_task :test }
 
     its(:cc) { should eq 'gcc' }
     its(:cflags) { should be_empty }
@@ -57,13 +58,12 @@ describe PaperHouse::ExecutableTask, '.new' do
     its(:ldflags) { should be_empty }
     its(:library_dependencies) { should be_empty }
     its(:name) { should eq 'test' }
-    its(:sources) { should eq '*.c'  }
     its(:target_directory) { should eq '.' }
   end
 
   context 'with :test and block' do
     subject do
-      PaperHouse::ExecutableTask.new(:test) do | task |
+      PaperHouse::DSL::executable_task(:test) do | task |
         task.executable_name = executable_name
       end
     end
@@ -80,6 +80,7 @@ describe PaperHouse::ExecutableTask, '.new' do
       its(:executable_name) { should eq :new_name }
     end
   end
+
 end
 
 ### Local variables:

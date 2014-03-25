@@ -47,23 +47,6 @@ module PaperHouse
 
     private
 
-    def find_prerequisites(task, klass_list)
-      klass_list.each do |klass|
-        maybe_enhance task, klass
-      end
-    end
-
-    def maybe_enhance(name, klass)
-      task = klass.find_named(name)
-      enhance task if task
-    end
-
-    def enhance(library_task)
-      @library_dependencies ||= []
-      @library_dependencies |= [library_task.lname]
-      Rake::Task[target_path].enhance [library_task.target_path]
-    end
-
     def l_options
       library_dependencies.map do |each|
         "-l#{each}"

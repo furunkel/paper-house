@@ -17,6 +17,7 @@
 #
 
 require 'paper_house/static_library_task'
+require 'paper_house/dsl'
 
 describe Rake::Task do
   before { Rake::Task.clear }
@@ -28,7 +29,7 @@ describe Rake::Task do
       let(:task) { :libtest }
 
       context 'when StaticLibraryTask named :libtest is defined' do
-        before { PaperHouse::StaticLibraryTask.new :libtest }
+        before { PaperHouse::DSL::static_library_task :libtest }
 
         describe '#invoke' do
           it do
@@ -56,7 +57,7 @@ describe PaperHouse::StaticLibraryTask do
       let(:name) { :libtest }
 
       context 'when StaticLibraryTask named :libtest is defined' do
-        before { PaperHouse::StaticLibraryTask.new :libtest }
+        before { PaperHouse::DSL::static_library_task :libtest }
 
         it { expect(subject).to be_a PaperHouse::StaticLibraryTask }
       end
@@ -70,7 +71,7 @@ describe PaperHouse::StaticLibraryTask do
       let(:name) { 'libtest' }
 
       context 'when StaticLibraryTask named :libtest is defined' do
-        before { PaperHouse::StaticLibraryTask.new :libtest }
+        before { PaperHouse::DSL::static_library_task :libtest }
 
         it { expect(subject).to be_a PaperHouse::StaticLibraryTask }
       end
@@ -84,7 +85,7 @@ describe PaperHouse::StaticLibraryTask do
   end
 
   describe '.new' do
-    subject { PaperHouse::StaticLibraryTask.new task }
+    subject { PaperHouse::DSL::static_library_task task }
 
     context 'with :libtest' do
       let(:task) { :libtest }
@@ -93,7 +94,6 @@ describe PaperHouse::StaticLibraryTask do
       its(:cflags) { should be_empty }
       its(:includes) { should be_empty }
       its(:name) { should eq 'libtest' }
-      its(:sources) { should eq '*.c'  }
       its(:target_directory) { should eq '.' }
       its(:library_name) { should eq 'libtest' }
       its(:lname) { should eq 'test' }

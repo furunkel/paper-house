@@ -28,13 +28,6 @@ module PaperHouse
   class ExecutableTask < BuildTask
     include LinkerOptions
 
-    def initialize(name, &block)
-      super name, &block
-      Rake::Task[name].prerequisites.each do |each|
-        find_prerequisites each, [StaticLibraryTask, SharedLibraryTask]
-      end
-    end
-
     # @!attribute executable_name
     #   Name of target executable file.
     attr_writer :executable_name
@@ -44,8 +37,20 @@ module PaperHouse
     end
     alias_method :target_file_name, :executable_name
 
-    private
+    def invoke(*args)
+      @library_dependencies ||= []
+      prerequisites.each do |dep|
+        task = Rake::Task[dep]
+        # There is no point in linking that way
+        # Better directly pass the so file
+        #@library_dependencies << task.lname if task.respond_to? :lname
+        add_object task.target_path if task.respond_to? :target_path
 
+      end
+      super
+    end
+
+    private
     def generate_target
       sh(([cc] + cc_options).join(' '))
     end

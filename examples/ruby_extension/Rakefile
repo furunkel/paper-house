@@ -2,4 +2,6 @@
 
 require 'paper_house'
 
-PaperHouse::RubyExtensionTask.new :hello
+include PaperHouse::DSL
+
+ruby_extension_task :hello

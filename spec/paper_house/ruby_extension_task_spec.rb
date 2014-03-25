@@ -17,6 +17,7 @@
 #
 
 require 'paper_house/ruby_extension_task'
+require 'paper_house/dsl'
 
 describe Rake::Task do
   before { Rake::Task.clear }
@@ -28,7 +29,7 @@ describe Rake::Task do
       let(:task) { :test }
 
       context 'when RubyExtensionTask named :test is defined' do
-        before { PaperHouse::RubyExtensionTask.new :test }
+        before { PaperHouse::DSL::ruby_extension_task :test }
 
         describe '#invoke' do
           it do
@@ -56,7 +57,7 @@ describe PaperHouse::RubyExtensionTask do
       let(:name) { :test }
 
       context 'when RubyExtensionTask named :test is defined' do
-        before { PaperHouse::RubyExtensionTask.new :test }
+        before { PaperHouse::DSL::ruby_extension_task :test }
 
         it { expect(subject).to be_a PaperHouse::RubyExtensionTask }
       end
@@ -70,7 +71,7 @@ describe PaperHouse::RubyExtensionTask do
       let(:name) { 'test' }
 
       context %{when RubyExtensionTask named 'test' is defined} do
-        before { PaperHouse::RubyExtensionTask.new :test }
+        before { PaperHouse::DSL::ruby_extension_task :test }
 
         it { expect(subject).to be_a PaperHouse::RubyExtensionTask }
       end
@@ -85,19 +86,18 @@ describe PaperHouse::RubyExtensionTask do
 
   describe '.new' do
     context 'with :test' do
-      subject { PaperHouse::RubyExtensionTask.new :test }
+      subject { PaperHouse::DSL::ruby_extension_task :test }
 
       its(:cc) { should eq 'gcc' }
       its(:cflags) { should be_empty }
       its(:includes) { should be_empty }
       its(:name) { should eq 'test' }
-      its(:sources) { should eq '*.c'  }
       its(:target_directory) { should eq '.' }
     end
 
     context 'with :test and block' do
       subject do
-        PaperHouse::RubyExtensionTask.new(:test) do | task |
+        PaperHouse::DSL::ruby_extension_task(:test) do | task |
           task.library_name = library_name
         end
       end

@@ -2,13 +2,12 @@
 
 require 'paper_house'
 
-task :hello => :libhello
+include PaperHouse::DSL
 
-PaperHouse::StaticLibraryTask.new :libhello do | task |
+static_library_task :libhello do | task |
   task.sources = 'hello.c'
 end
 
-PaperHouse::ExecutableTask.new :hello do | task |
-  task.ldflags = '-L.'
+executable_task :hello => :libhello do | task |
   task.sources = 'main.c'
 end

@@ -19,12 +19,13 @@
 module PaperHouse
   # CC option utilities.
   module CcOptions
-    # @!attribute sources
-    #   Glob pattern to match source files.
-    attr_writer :sources
+
+    def sources=(sources)
+      @sources = FileList[sources]
+    end
 
     def sources
-      @sources ||= '*.c'
+      @sources ||= FileList['*.c']
     end
 
     # @!attribute cflags
@@ -59,7 +60,7 @@ module PaperHouse
     end
 
     def sources_list
-      FileList[sources]
+      sources
     end
   end
 end

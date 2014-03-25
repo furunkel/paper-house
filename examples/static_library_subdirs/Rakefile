@@ -2,9 +2,9 @@
 
 require 'paper_house'
 
-task :hello => :libhello
+include PaperHouse::DSL
 
-PaperHouse::StaticLibraryTask.new :libhello do | task |
+static_library_task :libhello do | task |
   task.library_name = 'hello'
   task.target_directory = 'objects'
   task.sources = 'sources/hello.c'
@@ -12,8 +12,7 @@ PaperHouse::StaticLibraryTask.new :libhello do | task |
   task.cflags = %w(-Werror -Wall -Wextra)
 end
 
-PaperHouse::ExecutableTask.new :hello do | task |
+executable_task :hello => :libhello do | task |
   task.sources = 'sources/main.c'
   task.includes = 'includes'
-  task.ldflags = '-Lobjects'
 end

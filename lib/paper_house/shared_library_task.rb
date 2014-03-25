@@ -29,11 +29,6 @@ module PaperHouse
     # Library version string.
     attr_accessor :version
 
-    def initialize(name, version = nil, &block)
-      @version = version
-      super name, &block
-    end
-
     # Real name of target library.
     def target_file_name
       fail 'version option is a mandatory.' unless @version

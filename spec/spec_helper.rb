@@ -28,6 +28,7 @@ end
 require 'coveralls'
 Coveralls.wear_merged!
 
+
 ### Local variables:
 ### mode: Ruby
 ### indent-tabs-mode: nil

@@ -17,6 +17,7 @@
 #
 
 require 'paper_house/shared_library_task'
+require 'paper_house/dsl'
 
 describe Rake::Task do
   before { Rake::Task.clear }
@@ -28,7 +29,7 @@ describe Rake::Task do
       let(:task) { :libtest }
 
       context 'when SharedLibraryTask named :libtest is defined' do
-        before { PaperHouse::SharedLibraryTask.new :libtest, '0.1.0' }
+        before { PaperHouse::DSL::shared_library_task :libtest, :version => '0.1.0' }
 
         describe '#invoke' do
           it do
@@ -56,7 +57,7 @@ describe PaperHouse::SharedLibraryTask do
       let(:name) { :libtest }
 
       context 'when SharedLibraryTask named :libtest is defined' do
-        before { PaperHouse::SharedLibraryTask.new :libtest, '0.1.0' }
+        before { PaperHouse::DSL::shared_library_task :libtest, :version => '0.1.0' }
 
         it { expect(subject).to be_a PaperHouse::SharedLibraryTask }
       end
@@ -70,7 +71,7 @@ describe PaperHouse::SharedLibraryTask do
       let(:name) { 'libtest' }
 
       context %{when SharedLibraryTask named 'libtest' is defined} do
-        before { PaperHouse::SharedLibraryTask.new :libtest, '0.1.0' }
+        before { PaperHouse::DSL::shared_library_task :libtest, :version => '0.1.0' }
 
         it { expect(subject).to be_a PaperHouse::SharedLibraryTask }
       end
@@ -85,13 +86,12 @@ describe PaperHouse::SharedLibraryTask do
 
   describe '.new' do
     context %{with name :libtest and version '0.1.0'} do
-      subject { PaperHouse::SharedLibraryTask.new :libtest, '0.1.0' }
+      subject { PaperHouse::DSL::shared_library_task :libtest, :version => '0.1.0' }
 
       its(:cc) { should eq 'gcc' }
       its(:cflags) { should be_empty }
       its(:includes) { should be_empty }
       its(:name) { should eq 'libtest' }
-      its(:sources) { should eq '*.c'  }
       its(:target_directory) { should eq '.' }
       its(:version) { should eq '0.1.0' }
       its(:linker_name) { should eq 'libtest.so' }
@@ -102,7 +102,7 @@ describe PaperHouse::SharedLibraryTask do
     end
 
     context 'with name :libtest and no version string' do
-      subject { PaperHouse::SharedLibraryTask.new :libtest }
+      subject { PaperHouse::DSL::shared_library_task :libtest }
 
       it do
         expect { subject }.to raise_error('version option is a mandatory.')
@@ -111,7 +111,7 @@ describe PaperHouse::SharedLibraryTask do
 
     context 'with name :libtest and block' do
       subject do
-        PaperHouse::SharedLibraryTask.new(:libtest) do | task |
+        PaperHouse::DSL::shared_library_task(:libtest) do | task |
           task.library_name = library_name
           task.version = version
         end
